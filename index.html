@@ -49,31 +49,6 @@
 </div>
 
 <script>
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = process;
-    xhr.open("GET", "https://raw.githubusercontent.com/wqf233333/DJI-SDK-SKILL/master/README.md", true);
-    xhr.send();
-
-    function process(demo)
-    {
-        console.log(demo)
-        if (xhr.readyState == 4) {
-            var resp = xhr.responseText;
-
-            // resp now has the text and you can process it.
-            console.log(resp);
-            resp_split = resp.split('\n\n');
-            console.log(resp_split);
-            for (var i = 0; i < resp_split.length; i++){
-                if (resp_split[i].startsWith("- ")){
-                    console.log(resp_split[i]); //Q
-                    console.log(resp_split[i+1]); //the corresponding A
-                    demo.gridData.push({Question: resp_split[i], Answer: resp_split[i+1]});
-                }
-            }
-        }
-    }
-
 
     Vue.component('demo-grid', {
         template: '#grid-template',
@@ -101,19 +76,43 @@
     })
 
     // bootstrap the demo
+
     var demo = new Vue({
         el: '#demo',
         data: {
             searchQuery: '',
             gridColumns: ['Question', 'Answer'],
-            gridData: [
-                { Question: 'What is ROS and how to work with it?', Answer: 'http://wiki.ros.org/'},
-                { Question: 'How could I compile and run the pkg?', Answer: 'http://wiki.ros.org/catkin/Tutorials'},
-                { Question: 'I compiled but cannot find pkg when roslaunch or rosrun', Answer: 'usually it means you forget source devel/setup.bash'}
-            ]
+            gridData: []
         }
     })
-    process(demo)
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = process;
+    xhr.open("GET", "https://raw.githubusercontent.com/wqf233333/DJI-SDK-SKILL/master/README.md", true);
+    xhr.send();
+
+    function process()
+    {
+        console.log(demo)
+        console.log(demo.gridData)
+        console.log(xhr.readyState);
+        if (xhr.readyState == 4) {
+            var resp = xhr.responseText;
+
+            // resp now has the text and you can process it.
+            console.log(resp);
+            resp_split = resp.split('\n\n');
+            //console.log(resp_split);
+            for (var i = 0; i < resp_split.length; i++){
+                if (resp_split[i].startsWith("- ")){
+                    console.log(resp_split[i]); //Q
+                    console.log(resp_split[i+1]); //the corresponding A
+                    demo.gridData.push({Question: resp_split[i].substring(2, resp_split[i].length), Answer: resp_split[i+1].substring(2, resp_split[i].length)});
+                }
+            }
+        }
+    }
+
+   
 
 </script>
 
