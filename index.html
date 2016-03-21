@@ -4,72 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>SDK Q&A Platform</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<style>
-    body {
-        font-family: Helvetica Neue, Arial, sans-serif;
-        font-size: 14px;
-        color: #444;
-    }
-
-    table {
-        border: 2px solid #42b983;
-        border-radius: 10px;
-        background-color: #fff;
-    }
-
-    th {
-        background-color: #42b983;
-        color: rgba(255,255,255,0.66);
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -user-select: none;
-    }
-
-    td {
-        background-color: #f9f9f9;
-    }
-
-    th, td {
-        min-width: 200;
-        padding: 10px 20px;
-    }
-
-    th.active {
-        color: #fff;
-    }
-
-    th.active .arrow {
-        opacity: 1;
-    }
-
-    .arrow {
-        display: inline-block;
-        vertical-align: middle;
-        width: 0;
-        height: 0;
-        margin-left: 5px;
-        opacity: 0.66;
-    }
-
-    .arrow.asc {
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-        border-bottom: 4px solid #fff;
-    }
-
-    .arrow.dsc {
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-        border-top: 4px solid #fff;
-    }
-
-    #search {
-        margin-bottom: 10px;
-    }
-
-</style>
 
 <body>
 
@@ -113,6 +49,7 @@
 </div>
 
 <script>
+
     Vue.component('demo-grid', {
         template: '#grid-template',
         props: {
@@ -139,18 +76,43 @@
     })
 
     // bootstrap the demo
+
     var demo = new Vue({
         el: '#demo',
         data: {
             searchQuery: '',
             gridColumns: ['Question', 'Answer'],
-            gridData: [
-                { Question: 'What is ROS and how to work with it?', Answer: 'http://wiki.ros.org/'},
-                { Question: 'How could I compile and run the pkg?', Answer: 'http://wiki.ros.org/catkin/Tutorials'},
-                { Question: 'I compiled but cannot find pkg when roslaunch or rosrun', Answer: 'usually it means you forget source devel/setup.bash'}
-            ]
+            gridData: []
         }
     })
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = process;
+    xhr.open("GET", "https://raw.githubusercontent.com/wqf233333/DJI-SDK-SKILL/master/README.md", true);
+    xhr.send();
+
+    function process()
+    {
+        console.log(demo)
+        console.log(demo.gridData)
+        console.log(xhr.readyState);
+        if (xhr.readyState == 4) {
+            var resp = xhr.responseText;
+
+            // resp now has the text and you can process it.
+            console.log(resp);
+            resp_split = resp.split('\n\n');
+            //console.log(resp_split);
+            for (var i = 0; i < resp_split.length; i++){
+                if (resp_split[i].startsWith("- ")){
+                    console.log(resp_split[i]); //Q
+                    console.log(resp_split[i+1]); //the corresponding A
+                    demo.gridData.push({Question: resp_split[i].substring(2, resp_split[i].length), Answer: resp_split[i+1].substring(2, resp_split[i].length)});
+                }
+            }
+        }
+    }
+
+   
 
 </script>
 
