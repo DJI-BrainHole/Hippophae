@@ -106,7 +106,7 @@
                 if (resp_split[i].startsWith("- ")){
                     console.log(resp_split[i]); //Q
                     console.log(resp_split[i+1]); //the corresponding A
-                    demo.gridData.push({Question: resp_split[i].substring(2, resp_split[i].length), Answer: resp_split[i+1].substring(2, resp_split[i].length)});
+                    demo.gridData.push({Question: resp_split[i].substring(2, resp_split[i].length), Answer: resp_split[i+1].substring(2, resp_split[i+1].length)});
                 }
             }
         }
